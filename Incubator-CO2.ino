@@ -3,52 +3,55 @@
  Created:	18/04/2024
  Author:	Eunice Lopez Ahumada
 */
+#include <M5Stack.h>
+#include <SoftwareSerial.h>
 
+#define CO2_SENSOR_PIN 2 // Pin TX de la sonda de CO2
+#define CO2_SENSOR_BAUDRATE 9600 // Baud rate de la sonda de CO2
+#define SOLENOID_PIN 13 // Pin GPIO para controlar la válvula solenoide
 
-#include <M5Core2.h>
-#include <Wire.h>
-#include "GMP251.h"
+#define TARGET_CO2_LEVEL 500 // Nivel objetivo de CO2 (en ppm)
+#define CO2_HYSTERESIS 50 // Histéresis para el control de CO2 (en ppm)
 
-// Definir el pin de control de la válvula solenoide
-#define VALVE_PIN 32
-
-// Inicializar el sensor de CO2
-GMP251 sensor_co2;
+SoftwareSerial co2Sensor(CO2_SENSOR_PIN, CO2_SENSOR_PIN - 1); // Crear instancia de SoftwareSerial para la sonda de CO2
 
 void setup() {
-  M5.begin();
-  Wire.begin();
-  
-  // Configurar el pin de la válvula solenoide
-  pinMode(VALVE_PIN, OUTPUT);
-  digitalWrite(VALVE_PIN, LOW);
-
-  M5.Lcd.clear();
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(50, 50);
-  M5.Lcd.println("Control de CO2");
-  M5.Lcd.setCursor(50, 80);
-  M5.Lcd.println("en incubadora");
+  Serial.begin(115200); // Iniciar la comunicación serial
+  co2Sensor.begin(CO2_SENSOR_BAUDRATE); // Iniciar la comunicación con la sonda de CO2
+  pinMode(SOLENOID_PIN, OUTPUT); // Configurar el pin de control de la válvula solenoide como salida
 }
 
 void loop() {
-  // Medir la concentración de CO2
-  int concentration = sensor_co2.read();
-  
+  // Leer la concentración de CO2 de la sonda
+  int co2Concentration = readCO2Concentration();
+
   // Mostrar la concentración de CO2 en la pantalla
-  M5.Lcd.setCursor(50, 120);
-  M5.Lcd.printf("CO2: %d ppm", concentration);
-  
-  // Regular la concentración de CO2 al 5%
-  int desired_concentration = 5000; // 5% de CO2 en ppm
-  if (concentration < desired_concentration) {
-    // Encender la válvula solenoide para añadir CO2
-    digitalWrite(VALVE_PIN, HIGH);
-  } else {
-    // Apagar la válvula solenoide si la concentración es suficiente
-    digitalWrite(VALVE_PIN, LOW);
+  M5.Display.clear();
+  M5.Display.print("Concentración de CO2: ");
+  M5.Display.print(co2Concentration);
+  M5.Display.println(" ppm");
+
+  // Controlar la válvula solenoide
+  if (co2Concentration > TARGET_CO2_LEVEL + CO2_HYSTERESIS) {
+    digitalWrite(SOLENOID_PIN, LOW); // Abrir la válvula solenoide para reducir el CO2
+  } else if (co2Concentration < TARGET_CO2_LEVEL - CO2_HYSTERESIS) {
+    digitalWrite(SOLENOID_PIN, HIGH); // Cerrar la válvula solenoide para aumentar el CO2
   }
 
-  delay(10000); // Medir y regular cada 10 segundos
+  delay(1000); // Esperar 1 segundo antes de realizar la siguiente lectura
 }
 
+int readCO2Concentration() {
+  // Leer datos de la sonda de CO2
+  while (co2Sensor.available() == 0) {
+    delay(1);
+  }
+
+  byte data[9];
+  co2Sensor.readBytes(data, 9);
+
+  // Extraer la concentración de CO2 de los datos
+  int co2Concentration = (data[2] << 8) | data[3];
+
+  return co2Concentration;
+}

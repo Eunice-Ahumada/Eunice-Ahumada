@@ -1,1 +1,9 @@
+# Ignore system files like desktop.ini
 desktop.ini
+
+# Ignore Google Drive sync files
+.Synced\*
+
+# Ignore other common OS-specific files
+.DS_Store
+Thumbs.db

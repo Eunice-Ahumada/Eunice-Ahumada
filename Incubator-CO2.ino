@@ -4,29 +4,51 @@
  Author:	Eunice Lopez Ahumada
 */
 
-///////////////////////////////////////////////////////////////////
-////// Libraries and its associated constants and variables //////
-/////////////////////////////////////////////////////////////////
 
-////// Board library
-#include <M5Stack.h>
-
-////// Comunication libraries
+#include <M5Core2.h>
 #include <Wire.h>
-#include <WiFi.h>
-#include <WiFiUdp.h>
-WiFiUDP ntpUDP; //Esta instancia se utiliza para realizar operaciones UDP
+#include "GMP251.h"
 
-////// Library for CO2 Sensor
+// Definir el pin de control de la válvula solenoide
+#define VALVE_PIN 32
 
+// Inicializar el sensor de CO2
+GMP251 sensor_co2;
 
-//CO2 sensor input GMP251//;
-const int CO2In = 2; //Especificar el PIN de entrada del sensor
-const int n = 500; // Mida n veces la entrada ADC para promediar 
-float sum = 0; // Registro de desplazamiento para almacenar los datos del ADC
+void setup() {
+  M5.begin();
+  Wire.begin();
+  
+  // Configurar el pin de la válvula solenoide
+  pinMode(VALVE_PIN, OUTPUT);
+  digitalWrite(VALVE_PIN, LOW);
 
+  M5.Lcd.clear();
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(50, 50);
+  M5.Lcd.println("Control de CO2");
+  M5.Lcd.setCursor(50, 80);
+  M5.Lcd.println("en incubadora");
+}
 
-//////////////////////////////////////
-////// Constants and Variables //////
-////////////////////////////////////
+void loop() {
+  // Medir la concentración de CO2
+  int concentration = sensor_co2.read();
+  
+  // Mostrar la concentración de CO2 en la pantalla
+  M5.Lcd.setCursor(50, 120);
+  M5.Lcd.printf("CO2: %d ppm", concentration);
+  
+  // Regular la concentración de CO2 al 5%
+  int desired_concentration = 5000; // 5% de CO2 en ppm
+  if (concentration < desired_concentration) {
+    // Encender la válvula solenoide para añadir CO2
+    digitalWrite(VALVE_PIN, HIGH);
+  } else {
+    // Apagar la válvula solenoide si la concentración es suficiente
+    digitalWrite(VALVE_PIN, LOW);
+  }
+
+  delay(10000); // Medir y regular cada 10 segundos
+}
 

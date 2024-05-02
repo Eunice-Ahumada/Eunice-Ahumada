@@ -68,6 +68,7 @@ const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pi
 
 
 //////// Function prototypes
+
 // Main States Handler
 void handleEvent(Event event);
 

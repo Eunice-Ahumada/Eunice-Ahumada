@@ -1,9 +1,8 @@
 #include "Incubator-CO2.ino"
 
 
-
-
-void readSensors() {
+void readSensors() 
+{
   // Placeholder for reading sensor data
   // Simulated with printing to serial monitor for demonstration purposes
   Serial.println("Reading sensors...");
@@ -13,7 +12,8 @@ void readSensors() {
   handleEvent(SENSOR_READING_READY);
 }
 
-void logData() {
+void logData() 
+{
   // Placeholder for logging sensor data
   // Simulated with printing to serial monitor for demonstration purposes
   Serial.println("Logging data...");
@@ -23,7 +23,8 @@ void logData() {
   handleEvent(TIMER_EXPIRED);
 }
 
-void sendToCloud() {
+void sendToCloud() 
+{
   // Placeholder for sending data to cloud
   // Simulated with printing to serial monitor for demonstration purposes
   Serial.println("Sending data to cloud...");
@@ -33,7 +34,8 @@ void sendToCloud() {
   handleEvent(CLOUD_SEND_SUCCESS);
 }
 
-void handleAlarm() {
+void handleAlarm() 
+{
   // Placeholder for handling alarm condition
   // Simulated with printing to serial monitor for demonstration purposes
   Serial.println("Alarm triggered!");
@@ -41,6 +43,22 @@ void handleAlarm() {
   currentState = ALARM_TRIGGERED;
 }
 
-inline void actuateSolenoid()
+void actuateSolenoid()
+{
+}
+
+void updateRTC()
+{
+}
+
+void updateScreen()
+{
+}
+
+void checkLimits()
+{
+}
+
+void computePID()
 {
 }

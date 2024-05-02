@@ -21,6 +21,7 @@
 time_t local_t; // Variable that stores the number of seconds since a particular date and time
 float CO2_concentration; // Variable that defines the CO2 concentration inside the incubator
 enum EstadoValvula {CLOSE,OPEN}; // Variable that defines the possible states of the valve
+
 QueueArray<int> event_queue;
 
 // Define states for the state machine
@@ -60,7 +61,10 @@ const unsigned long intervalReadingSensors = 1000; // Interval for reading senso
 const unsigned long intervalLoggingData = 5000;    // Interval for logging data in milliseconds
 const unsigned long intervalSendingToCloud = 10000; // Interval for sending data to cloud in milliseconds
 
-// Pines
+// Pin Location Example
+const int pinCO2SensorRX = 12; // The RX pin of the CO2 probe is connected to pin 12 of the ESP32
+const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pin 13 of the ESP32
+
 
 
 //////// Function prototypes

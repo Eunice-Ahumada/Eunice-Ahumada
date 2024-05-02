@@ -1,6 +1,8 @@
 
 
-
+time_t readRTC() {
+  //  Read the UNIX time form the RTC
+}
 
 void readSensors() {
   // Placeholder for reading sensor data

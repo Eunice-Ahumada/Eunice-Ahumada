@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////
 ////// Libraries and its associated constants and variables //////
 //////////////////////////////////////////////////////////////////
-
+#include <QueueArray.h>
 
 
 
@@ -24,25 +24,33 @@
 ////// User Constants and Variables //////
 //////////////////////////////////////////
 
+time_t local_t;     // Local time with DST adjust in UNIX time stamp format
 
 
 
 // Define states for the state machine
 enum State {
   IDLE,
-  UPDATE_RTC
+  RUNNING,
+  DOOR_OPEN,
+  READ_RTC,
+  UPDATE_RTC,
   READ_SENSORS,
-  COMPUTE_PID
-  ACTUATE_SOLENOID
+  COMPUTE_PID,
+  ACTUATE_SOLENOID,
   UPDATE_SCREEN,
   LOG_DATA,
   SEND_TO_CLOUD,
   CHECK_LIMITS
 };
 
+QueueArray<int> event_queue;
+
 // Define events for the event-driven architecture
 enum Event {
-  TIMER_EXPIRED,
+  TIME_TO_READ_RTC,
+  TIME_TO_READ_SENSOR,
+  TIME_TO_UPDATE_RTC,
   SENSOR_READING_READY,
   CLOUD_SEND_SUCCESS,
   ALARM_TRIGGERED_EVENT
@@ -119,12 +127,32 @@ void setup() {
 void loop() {
   // Placeholder for checking events (e.g., timer expiration, sensor readings, cloud status)
   // Simulated with delay for demonstration purposes
-  delay(1000);
+  // delay(1000);
   
-  // Placeholder for triggering events based on conditions
-  // Simulated with random events for demonstration purposes
-  Event randomEvent = static_cast<Event>(random(TIMER_EXPIRED, ALARM_TRIGGERED_EVENT + 1));
-  handleEvent(randomEvent);
+
+  
+  /////// Director (Procuder of Events)
+  // TIME_TO_READ_RTC logic
+  if (true) { //replace true with adecuate logic
+    event_queue.enqueue(TIME_TO_READ_RTC)
+  }
+  // TIME_TO_READ_SENSOR logic
+  if (local_t % 300) {
+    event_queue.enqueue(TIME_TO_READ_SENSOR)
+  }
+  // Tesi if another event occurred
+  // If so, add event to queue
+
+
+
+  /////// Event handler (Consumer of Events)
+  while (!event_queue.isEmpty()) {
+    Event currentEvent = event_queue.dequeue();
+    handleEvent(currentEvent);
+  }
+}
+
+
 }
 
 

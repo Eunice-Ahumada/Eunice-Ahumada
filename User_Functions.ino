@@ -1,3 +1,4 @@
+#include "Incubator-CO2.ino"
 
 
 
@@ -38,4 +39,8 @@ void handleAlarm() {
   Serial.println("Alarm triggered!");
   // Placeholder for transitioning to ALARM_TRIGGERED state
   currentState = ALARM_TRIGGERED;
+}
+
+inline void actuateSolenoid()
+{
 }

@@ -68,14 +68,11 @@ void readSensors();
 void logData();
 void sendToCloud();
 void handleAlarm();
-
-
-
-
-
-
-
-
+void actuateSolenoid();
+void updateRTC();
+void updateScreen();
+void checkLimits();
+void computePID();
 
 
 
@@ -93,38 +90,13 @@ void setup() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////
 // The loop function runs over and over again until power down or reset //
 //////////////////////////////////////////////////////////////////////////
 
 
 void loop() {
-  // Placeholder for checking events (e.g., timer expiration, sensor readings, cloud status)
-  // Simulated with delay for demonstration purposes
-  delay(1000);
-  
-  // Placeholder for triggering events based on conditions
-  // Simulated with random events for demonstration purposes
-  Event randomEvent = static_cast<Event>(random(TIMER_EXPIRED, ALARM_TRIGGERED_EVENT + 1));
-  handleEvent(randomEvent);
+ 
 }
 
 

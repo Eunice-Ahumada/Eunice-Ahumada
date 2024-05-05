@@ -10,12 +10,11 @@
 //////////////////////////////////////////////////////////////////
 
 #include <QueueArray.h>
-
-
+#include <TimeLib.h>
 
 
 //////////////////////////////////////////
-////// User Constants and Variables //////
+////// Constants and Variables //////
 //////////////////////////////////////////
 
 time_t local_t; // Variable that stores the number of seconds since a particular date and time
@@ -23,6 +22,9 @@ float CO2_concentration; // Variable that defines the CO2 concentration inside t
 enum EstadoValvula {CLOSE,OPEN}; // Variable that defines the possible states of the valve
 
 QueueArray<int> event_queue;
+
+// Main States Handler
+void handleEvent(Event event);
 
 // Define states for the state machine
 enum State {
@@ -37,7 +39,6 @@ enum State {
   UPDATE_SCREEN,
   LOG_DATA,
   SEND_TO_CLOUD,
-  CHECK_LIMITS
 };
 
 
@@ -57,84 +58,90 @@ enum Event {
 
 // Global variables
 State currentState = IDLE;
-const unsigned long intervalReadingSensors = 1000; // Interval for reading sensors in milliseconds
-const unsigned long intervalLoggingData = 5000;    // Interval for logging data in milliseconds
-const unsigned long intervalSendingToCloud = 10000; // Interval for sending data to cloud in milliseconds
+const unsigned long intervalReadingSensors = 60000; // Interval for reading sensors in milliseconds
+const unsigned long intervalLoggingData = 3600000;    // Interval for logging data in milliseconds
+const unsigned long intervalSendingToCloud = 3600000; // Interval for sending data to cloud in milliseconds
 
 // Pin Location Example
 const int pinCO2SensorRX = 12; // The RX pin of the CO2 probe is connected to pin 12 of the ESP32
 const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pin 13 of the ESP32
 
 
-
-//////// Function prototypes
-
-// Main States Handler
-void handleEvent(Event event);
-
 // User functions
 void readSensors();
 void logData();
 void sendToCloud();
-void handleAlarm();
 void actuateSolenoid();
 void updateRTC();
 void updateScreen();
-void checkLimits();
 void computePID();
 
 
 
-//////////////////////////////////////////////////////////////////////////
-// the setup function runs once when you press reset or power the board //
-//////////////////////////////////////////////////////////////////////////
-
+/////////////////////////
+////// the setup ///////
+///////////////////////
 
 
 void setup() {
   // Initialize serial communication
-  Serial.begin(115200);
+  Serial.begin(115200); 
 }
 
 
 
 
-//////////////////////////////////////////////////////////////////////////
-// The loop function runs over and over again until power down or reset //
-//////////////////////////////////////////////////////////////////////////
+///////////////////////
+////// The loop //////
+/////////////////////
 
 
 void loop() 
 {
- {
-   // Placeholder for checking events (e.g., timer expiration, sensor readings, cloud status)
-  // Simulated with delay for demonstration purposes
-  // delay(1000);
-  
-  
+ 
   /////// Director (Procuder of Events)
+  
+  // Add events
+  
   // TIME_TO_READ_RTC logic
   if (true) 
   { //replace true with adecuate logic
     event_queue.enqueue(TIME_TO_READ_RTC)
   }
   // TIME_TO_READ_SENSOR logic
-  if (local_t % 300) 
+  if (local_t % 300 == 0) 
   {
     event_queue.enqueue(TIME_TO_READ_SENSOR)
   }
-  // Tesi if another event occurred
-  // If so, add event to queue
-
-
+ 
 
   /////// Event handler (Consumer of Events)
+
+  // Add events
+
   while (!event_queue.isEmpty()) 
   {
     Event currentEvent = event_queue.dequeue();
     handleEvent(currentEvent);
   }
- }
+ 
+
+ /////// Main event handler (Events with functions)
+
+void handleEvent(Event event) 
+  {
+  switch(event) 
+   {
+    case TIME_TO_READ_RTC:
+      updateRTC();
+      break;
+    case TIME_TO_READ_SENSOR:
+      readSensors();
+      break;
+   }    
+  }  
+
+
 }
 
 

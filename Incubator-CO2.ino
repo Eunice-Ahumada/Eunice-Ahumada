@@ -13,9 +13,9 @@
 #include <TimeLib.h>
 
 
-//////////////////////////////////////////
+//////////////////////////////////////
 ////// Constants and Variables //////
-//////////////////////////////////////////
+////////////////////////////////////
 
 time_t local_t; // Variable that stores the number of seconds since a particular date and time
 float CO2_concentration; // Variable that defines the CO2 concentration inside the incubator
@@ -84,7 +84,7 @@ void computePID();
 
 
 void setup() {
-  // Initialize serial communication
+// Initialize serial communication
   Serial.begin(115200); 
 }
 
@@ -99,25 +99,73 @@ void setup() {
 void loop() 
 {
  
-  /////// Director (Procuder of Events)
+/////// Director (Procuder of Events) Como se llavarán a cabo los eventos
   
-  // Add events
-  
+ //// Time ////
+
   // TIME_TO_READ_RTC logic
   if (true) 
-  { //replace true with adecuate logic
+  { //replace true with adequate logic
     event_queue.enqueue(TIME_TO_READ_RTC)
   }
+
+  //TIME_TO_UPDATE_RTC logic
+  if (local_t % 1 == 0) // The time is updated every second
+  {
+    event_queue.enqueue(TIME_TO_UPDATE_RTC);
+  }
+
+ //// CO2 Sensor ////
+
   // TIME_TO_READ_SENSOR logic
-  if (local_t % 300 == 0) 
+  if (local_t % 60 == 0) // Read the sensor every minute
   {
     event_queue.enqueue(TIME_TO_READ_SENSOR)
   }
  
+  // CO2_MEASUREMENT logic
+  if (local_t % 60 == 0 && local_t > 0) // CO2 measurement every minute
+  {
+    event_queue.enqueue(CO2_MEASUREMENT);
+  }
 
-  /////// Event handler (Consumer of Events)
+  // SENSOR READING READY logic
+  if (local_t % 60 == 0) // Sensor reading ready
+  {
+    event_queue.enqueue(SENSOR_READING_READY);
+  }
 
-  // Add events
+  // CO2_CONTROL logic
+  if (CO2_concentration != 5.0) // CO2 control when the measured concentration is different than 5%
+  {
+    event_queue.enqueue(CO2_CONTROL);
+  }
+
+ //// Data ////
+   
+  // DATA_LOGGING logic
+  if (local_t % 3600 == 0 && local_t > 0) // Record data every hour
+  {
+    event_queue.enqueue(DATA_LOGGING);
+  }
+
+  // CLOUD_SEND logic
+  if (local_t % 3600 == 0 && local_t > 0) // Send data to the cloud every hour
+  {
+    event_queue.enqueue(CLOUD_SEND);
+  }
+
+  bool send_success = sendToCloud();
+
+  // CLOUD_SEND_SUCCESS logic
+  if (success_condition) // Reemplaza success_condition con la condición adecuada para verificar si el envío a la nube fue exitoso
+  {
+    event_queue.enqueue(CLOUD_SEND_SUCCESS); // Agrega el evento CLOUD_SEND_SUCCESS a la cola de eventos
+  }
+
+
+
+/////// Event handler (Consumer of Events)
 
   while (!event_queue.isEmpty()) 
   {
@@ -126,7 +174,7 @@ void loop()
   }
  
 
- /////// Main event handler (Events with functions)
+/////// Main event handler (Events with functions)
 
 void handleEvent(Event event) 
   {

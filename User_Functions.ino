@@ -40,7 +40,7 @@ void logData() (int co2Concentration)
 }
  
 
- 
+
 void sendToCloud() 
 {
   // Placeholder for sending data to cloud
@@ -66,7 +66,7 @@ void updateScreen()
 {
 }
 
-void checkLimits()
+void logData()
 {
 }
 

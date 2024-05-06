@@ -158,9 +158,9 @@ void loop()
   bool send_success = sendToCloud();
 
   // CLOUD_SEND_SUCCESS logic
-  if (success_condition) // Reemplaza success_condition con la condición adecuada para verificar si el envío a la nube fue exitoso
+  if (success_condition) // Check if sending to the cloud was successful
   {
-    event_queue.enqueue(CLOUD_SEND_SUCCESS); // Agrega el evento CLOUD_SEND_SUCCESS a la cola de eventos
+    event_queue.enqueue(CLOUD_SEND_SUCCESS); 
   }
 
 
@@ -173,22 +173,6 @@ void loop()
     handleEvent(currentEvent);
   }
  
-
-/////// Main event handler (Events with functions)
-
-void handleEvent(Event event) 
-  {
-  switch(event) 
-   {
-    case TIME_TO_READ_RTC:
-      updateRTC();
-      break;
-    case TIME_TO_READ_SENSOR:
-      readSensors();
-      break;
-   }    
-  }  
-
 
 }
 

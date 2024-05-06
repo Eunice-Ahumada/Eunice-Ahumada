@@ -33,7 +33,7 @@ enum State {
   DOOR_OPEN,
   READ_RTC,
   UPDATE_RTC,
-  READ_SENSORS,
+  READ_SENSOR,
   COMPUTE_PID,
   ACTUATE_SOLENOID,
   UPDATE_SCREEN,
@@ -68,7 +68,7 @@ const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pi
 
 
 // User functions
-void readSensors();
+void readSensor();
 void logData();
 void sendToCloud();
 void actuateSolenoid();

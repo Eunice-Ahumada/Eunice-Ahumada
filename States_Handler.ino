@@ -1,13 +1,17 @@
 
-void handleEvent(Event event) {
+void handleEvent(Event event) 
+{
   switch (currentState) {
+    
     case IDLE:
+      
       // Handle events in IDLE state
       if (event == TIMER_EXPIRED) {
         currentState = READING_SENSORS;
         readSensors();
       }
       break;
+
     case READING_SENSORS:
       // Handle events in READING_SENSORS state
       if (event == SENSOR_READING_READY) {
@@ -15,6 +19,7 @@ void handleEvent(Event event) {
         logData();
       }
       break;
+
     case LOGGING_DATA:
       // Handle events in LOGGING_DATA state
       if (event == TIMER_EXPIRED) {
@@ -22,6 +27,7 @@ void handleEvent(Event event) {
         sendToCloud();
       }
       break;
+
     case SENDING_TO_CLOUD:
       // Handle events in SENDING_TO_CLOUD state
       if (event == CLOUD_SEND_SUCCESS) {
@@ -29,9 +35,6 @@ void handleEvent(Event event) {
         // Reset timer for reading sensors
       }
       break;
-    case ALARM_TRIGGERED:
-      // Handle events in ALARM_TRIGGERED state
-      // Wait for manual reset or timeout
-      break;
+
   }
 }

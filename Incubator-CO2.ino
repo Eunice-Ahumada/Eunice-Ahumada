@@ -31,17 +31,15 @@ void handleEvent(Event event);
 
 // States for the state machine
 enum State {
-  IDLE,
-  RUNNING,
-  DOOR_OPEN,
-  READ_RTC,
-  UPDATE_RTC,
-  READ_SENSOR,
-  COMPUTE_PID,
-  ACTUATE_SOLENOID,
-  UPDATE_SCREEN,
-  LOG_DATA,
-  SEND_TO_CLOUD,
+  IDLE, // The system is waiting for an event
+  READING_RTC,
+  UPDATING_RTC,
+  READING_SENSOR,
+  CONTROLLING_CO2,
+  LOGGING_DATA,
+  SENDING_TO_CLOUD,
+  CLOUD_SEND_SUCCESS, 
+
 };
 
 
@@ -76,13 +74,17 @@ const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pi
 
 
 // User functions
-void readSensor();
-void logData();
-void sendToCloud();
-void actuateSolenoid();
-void updateRTC();
-void updateScreen();
-void computePID();
+void timerExpired();
+void timeToReadRTC();
+void timeToUpdateRTC();
+void sensorReadingReady();
+void timeToReadSensor();
+void CO2Measurement();
+void CO2Control();
+void dataLogging();
+void cloudSend();
+void cloudSendSuccess();
+
 
 
 
@@ -175,7 +177,7 @@ void loop()
 
 /////// Event handler (Consumer of Events)
 
-  while (!event_queue.isEmpty()) 
+  while (!event_queue.isEmpty()) // Continues as long as the event queue is not empty
   {
     Event currentEvent = event_queue.dequeue();
     handleEvent(currentEvent);

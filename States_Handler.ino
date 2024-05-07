@@ -1,40 +1,69 @@
-
-void handleEvent(Event event) 
-{
+void handleEvent(Event event) {
   switch (currentState) {
     
     case IDLE:
-      
-      // Handle events in IDLE state
       if (event == TIMER_EXPIRED) {
-        currentState = READING_SENSORS;
-        readSensors();
+        currentState = READING_SENSOR;
+        timeToReadSensor();
+      } else if (event == TIME_TO_READ_RTC) {
+        currentState = READING_RTC;
+        timeToReadRTC();
       }
       break;
 
-    case READING_SENSORS:
-      // Handle events in READING_SENSORS state
+    case READING_RTC:
       if (event == SENSOR_READING_READY) {
+        currentState = READING_SENSOR;
+        sensorReadingReady();
+      }
+      break;
+
+    case UPDATING_RTC:
+      if (event == TIME_TO_UPDATE_RTC) {
+        currentState = IDLE;
+        timeToUpdateRTC();
+      }
+      break;
+
+    case READING_SENSOR:
+      if (event == CO2_MEASUREMENT) {
+        currentState = CONTROLLING_CO2;
+        CO2Measurement();
+      } else if (event == CO2_CONTROL) {
+        CO2Control();
+      } else if (event == DATA_LOGGING) {
         currentState = LOGGING_DATA;
-        logData();
+        dataLogging();
+      } else if (event == CLOUD_SEND) {
+        currentState = SENDING_TO_CLOUD;
+        cloudSend();
+      }
+      break;
+
+    case CONTROLLING_CO2:
+      if (event == CO2_CONTROL) {
+        CO2Control();
+      } else if (event == DATA_LOGGING) {
+        currentState = LOGGING_DATA;
+        dataLogging();
+      } else if (event == CLOUD_SEND) {
+        currentState = SENDING_TO_CLOUD;
+        cloudSend();
       }
       break;
 
     case LOGGING_DATA:
-      // Handle events in LOGGING_DATA state
-      if (event == TIMER_EXPIRED) {
+      if (event == CLOUD_SEND) {
         currentState = SENDING_TO_CLOUD;
-        sendToCloud();
+        cloudSend();
       }
       break;
 
     case SENDING_TO_CLOUD:
-      // Handle events in SENDING_TO_CLOUD state
       if (event == CLOUD_SEND_SUCCESS) {
         currentState = IDLE;
-        // Reset timer for reading sensors
+        cloudSendSuccess();
       }
       break;
-
   }
 }

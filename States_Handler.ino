@@ -20,19 +20,8 @@ void handleEvent(Event event) { // Takes an event as argument
      }  else if (event == TIME_TO_READ_RTC) {
         currentState = IDLE;
         timeToReadRTC();
-     }  else if (event == TIME_TO_UPDATE_RTC) {
-        currentState = IDLE;
-        timeToUpdateRTC();
      }
      break;
-
-
-    case UPDATING_RTC:
-      if (event == TIME_TO_UPDATE_RTC) {
-        currentState = IDLE;
-        timeToUpdateRTC();
-      }
-      break;
 
 
     case READING_SENSOR:

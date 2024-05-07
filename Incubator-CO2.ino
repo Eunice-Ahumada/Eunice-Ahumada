@@ -47,7 +47,6 @@ enum State {
 enum Event {
   TIMER_EXPIRED, // Indicates that a certain time interval has passed
   TIME_TO_READ_RTC, // Time to read the real time clock
-  TIME_TO_UPDATE_RTC, // Time to update the real time clock
   SENSOR_READING_READY, // The sensor is ready to measure CO2
   TIME_TO_READ_SENSOR, // Time to read the sensor
   CO2_MEASUREMENT, // Every minute the sensor reading is triggered to measure the CO2 concentration
@@ -67,6 +66,8 @@ const unsigned long intervalLoggingData = 3600000;    // Interval for logging da
 const unsigned long intervalSendingToCloud = 3600000; // Interval for sending data to cloud in milliseconds
 const int CO2_SENSOR_ADDRESS = 0x23;
 const int SD_CHIP_SELECT = 10; // Pin for the chip select of the SD card
+unsigned long lastMeasurementTime = 0;  // Variable to store the time of the last measurement
+
 
 // Pin Location Example
 const int pinCO2SensorRX = 12; // The RX pin of the CO2 probe is connected to pin 12 of the ESP32
@@ -76,7 +77,6 @@ const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pi
 // User functions
 void timerExpired();
 void timeToReadRTC();
-void timeToUpdateRTC();
 void sensorReadingReady();
 void timeToReadSensor();
 void CO2Measurement();

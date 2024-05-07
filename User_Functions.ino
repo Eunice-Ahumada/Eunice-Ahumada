@@ -1,13 +1,40 @@
 #include "Incubator-CO2.ino"
-
 #include <Wire.h>
 #define CO2_SENSOR_ADDRESS 0x23
 
 
+void timerExpired() {
+  handleEvent();
+}
 
-void readSensor() 
-{
+
+void timeToReadRTC() {
+
+  DateTime now = rtc.now(); // Print the time in the format HH:MM:SS
   
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.println(now.second(), DEC);
+ 
+  delay(1000);  // Wait a second before reading the time again
+  
+  handleEvent(TIMER_EXPIRED);
+}
+
+
+void timeToReadSensor() {
+  unsigned long currentTime = millis();  // Get the current time in milliseconds
+  if (currentTime - lastMeasurementTime >= 60000) { // Check if one minute has passed since the last measurement
+    lastMeasurementTime = currentTime; // Update last measurement time
+  }
+  handleEvent(CO2_MEASUREMENT);
+}
+
+
+
+void CO2Measurement() {
   Wire.begin(); // Initializes I2C communication
 
   Wire.requestFrom(CO2_SENSOR_ADDRESS, 2); // Requests 2 bytes of sensor data
@@ -29,47 +56,33 @@ void readSensor()
 }
 
 
+void sensorReadingReady() {
 
-
-void logData() (int co2Concentration) 
-{
-  saveData(co2Concentration); // // Save CO2 concentration data to SD card
-
-  // Placeholder for triggering TIMER_EXPIRED event
-  handleEvent(CLOUD_SEND);
 }
+
+
+void CO2Control() {
  
+}
 
 
-void sendToCloud() 
+void dataLoggin() (int co2Concentration) 
 {
-  // Placeholder for sending data to cloud
-  // Simulated with printing to serial monitor for demonstration purposes
-  Serial.println("Sending data to cloud...");
-  // Simulated delay
-  delay(500);
-  // Placeholder for triggering CLOUD_SEND_SUCCESS event
-  handleEvent(CLOUD_SEND_SUCCESS);
+  saveData(co2Concentration); // Save CO2 concentration data to SD card
+  handleEvent(CLOUD_SEND); // Placeholder for triggering TIMER_EXPIRED event
+}
+
+
+void cloudSend() {
+  // Enviar datos a la nube
 }
 
 
 
-void actuateSolenoid()
-{
+void cloudSendSuccess() {
+  // Realizar acciones relevantes cuando el envío a la nube sea exitoso
 }
 
-void updateRTC()
-{
-}
 
-void updateScreen()
-{
-}
 
-void logData()
-{
-}
 
-void computePID()
-{
-}

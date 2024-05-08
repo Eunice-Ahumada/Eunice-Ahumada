@@ -63,6 +63,19 @@ void sensorReadingReady() {
 
 void CO2Control() {
  
+  def CO2Control(): // Definition of the CO2 Control function
+  concentration = leerConcentracionCO2() // CO2 concentration is initialized
+  umbral = 5 // The CO2 concentration threshold of 5% is established
+
+  while True:
+  concentration = leerConcentracionCO2() // Read the current CO2 concentration
+    if concentration < umbral: // Check if the concentration is below 5%
+      abrirValvulaSolenoide()
+      print("Válvula solenoide abierta")
+      elif concentration >= umbral: // Check if the concentration has reached 5%
+      cerrarValvulaSolenoide()
+      print("Válvula solenoide cerrada")
+
 }
 
 

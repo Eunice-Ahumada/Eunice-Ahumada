@@ -9,10 +9,31 @@
 ////// Libraries and its associated constants and variables //////
 //////////////////////////////////////////////////////////////////
 
-#include <QueueArray.h>
+////// Board library
+#include <M5Stack.h>
+
+
+////// Comunication libraries
+#include <Wire.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
+WiFiUDP ntpUDP;
+
+
+////// Iot Thinger
+
+
+
+
+////// Time libraries
 #include <TimeLib.h>
+
+
+////// Other libraries
+#include <QueueArray.h>
 #include <Wire.h>
 #include <SD.h>
+
 
 
 

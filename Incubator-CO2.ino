@@ -83,8 +83,8 @@ unsigned long lastMeasurementTime = 0;  // Variable to store the time of the las
 
 
 // Pin Location Example
-const int pinCO2SensorRX = 12; // The RX pin of the CO2 probe is connected to pin 12 of the ESP32
-const int pinCO2SensorTX = 13; // The TX pin of the CO2 probe is connected to pin 13 of the ESP32
+const int ADC_chip_select =1;
+
 
 
 // User functions
@@ -110,9 +110,7 @@ const char* serverName = "http://example.com/post-data"; // Replace with the ser
 
 void setup() { { // Initialize serial communication
   Serial.begin(115200); 
-}
 
-Serial.begin(9600);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -121,7 +119,7 @@ Serial.begin(9600);
   Serial.println("Connected to WiFi");
 
   }
-
+}
 ///////////////////////
 ////// The loop //////
 /////////////////////

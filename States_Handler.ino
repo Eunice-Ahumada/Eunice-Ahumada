@@ -30,7 +30,7 @@ void handleEvent(Event event) { // Takes an event as argument
         timeToReadSensor();
       } else if (event == CO2_MEASUREMENT) {
         currentState = CONTROLLING_CO2;
-        CO2Measurement();
+        CO2_concentration = CO2Measurement();
       } else if (event == SENSOR_READING_READY) {
         currentState = LOGGING_DATA;
         sensorReadingReady();

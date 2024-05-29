@@ -37,18 +37,9 @@ void timeToReadSensor() {
 
 
 
-void CO2Measurement() {
-  Wire.begin(); // Initializes I2C communication
-
-  Wire.requestFrom(CO2_SENSOR_ADDRESS, 2); // Requests 2 bytes of sensor data
-
-  while (Wire.available() < 2); // Wait until all bytes are received
- 
-  byte msb = Wire.read(); // Read received bytes
-  byte lsb = Wire.read();
-
-  int co2Concentration = (msb << 8) | lsb; // Calculates the concentration of CO2 in parts per million (ppm)
+float CO2Measurement() {
   
+  float lectura = 400;
   Serial.print("CO2 Concentration: "); // Print the CO2 concentration on the serial monitor
   Serial.print(co2Concentration);
   Serial.println(" ppm");
@@ -56,6 +47,7 @@ void CO2Measurement() {
   logData(co2Concentration);
 
   handleEvent(SENSOR_READING_READY); // Placeholder for triggering SENSOR_READING_READY event
+  return lectura;
 }
 
 

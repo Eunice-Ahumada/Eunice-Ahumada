@@ -1,0 +1,4 @@
+{
+    "configuration": "PSRAM=enabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=16M,UploadSpeed=1500000,LoopCore=1,EventsCore=1,DebugLevel=none,EraseFlash=none",
+    "board": "m5stack:esp32:m5stack_core2"
+}

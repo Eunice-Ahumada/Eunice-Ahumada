@@ -12,22 +12,14 @@
 ////// Board library
 #include <M5Stack.h>
 
-
 ////// Comunication libraries
 #include <Wire.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
 WiFiUDP ntpUDP;
 
-
-////// Iot Thinger
-
-
-
-
 ////// Time libraries
 #include <TimeLib.h>
-
 
 ////// Other libraries
 #include <QueueArray.h>
@@ -102,10 +94,12 @@ void sensorReadingReady();
 void timeToReadSensor();
 void CO2Measurement();
 void CO2Control();
-void dataLogging();
 void cloudSend();
 void cloudSendSuccess();
 
+const char* ssid = "your_SSID";
+const char* password = "your_PASSWORD";
+const char* serverName = "http://example.com/post-data"; // Replace with the server URL
 
 
 
@@ -114,13 +108,19 @@ void cloudSendSuccess();
 ///////////////////////
 
 
-void setup() {
-// Initialize serial communication
+void setup() { { // Initialize serial communication
   Serial.begin(115200); 
 }
 
+Serial.begin(9600);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
 
-
+  }
 
 ///////////////////////
 ////// The loop //////

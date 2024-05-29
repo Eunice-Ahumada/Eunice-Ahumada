@@ -1,5 +1,8 @@
 #include "Incubator-CO2.ino"
 #include <Wire.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+
 #define CO2_SENSOR_ADDRESS 0x23
 
 
@@ -58,17 +61,20 @@ void CO2Measurement() {
 
 void sensorReadingReady() {
 
+  Serial.println("Lectura del sensor lista");
+  
 }
+
 
 
 void CO2Control() {
  
   def CO2Control(): // Definition of the CO2 Control function
-  concentration = leerConcentracionCO2() // CO2 concentration is initialized
+  concentration = CO2Measurement() // CO2 concentration is initialized
   umbral = 5 // The CO2 concentration threshold of 5% is established
 
   while True:
-  concentration = leerConcentracionCO2() // Read the current CO2 concentration
+  concentration = CO2Measurement() // Read the current CO2 concentration
     if concentration < umbral: // Check if the concentration is below 5%
       abrirValvulaSolenoide()
       print("Válvula solenoide abierta")
@@ -86,15 +92,34 @@ void dataLoggin() (int co2Concentration)
 }
 
 
-void cloudSend() {
-  // Enviar datos a la nube
+void cloudSend() { 
+ if (WiFi.status() == WL_CONNECTED) { // Check WiFi connection status
+    HTTPClient http;
+
+    http.begin(serverName); // Specify the URL
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded"); // Specify content-type header
+
+    int co2Concentration = 500; // Replace with the actual CO2 concentration value
+    String httpRequestData = "co2=" + String(co2Concentration); // Prepare the data to be sent
+
+    int httpResponseCode = http.POST(httpRequestData); // Send the request
+
+    if (httpResponseCode > 0) {
+      String response = http.getString(); // Get the response to the request
+      Serial.println(httpResponseCode); // Print return code
+      Serial.println(response); // Print request answer
+    } else {
+      Serial.print("Error on sending POST: "); }
+}
 }
 
 
 
-void cloudSendSuccess() {
-  // Realizar acciones relevantes cuando el envío a la nube sea exitoso
+void cloudSendSuccess() { 
+  Serial.println("Envío a la nube exitoso");
+  // Aquí puedes agregar más acciones relevantes, como encender un LED, enviar una notificación, etc.
 }
+
 
 
 

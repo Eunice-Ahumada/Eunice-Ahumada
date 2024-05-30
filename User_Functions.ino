@@ -38,7 +38,29 @@ void timeToReadSensor() {
 
 
 float CO2Measurement() {
+
+  valor = AD7193.ReadADCChannel(0); // conversion A/N on input 1
+  valor = valeur >> 8; // Extraction of value
+  tension = AD7193.DataToVoltage(valeur); // Recovery of tension
+  Serial.println("");
+  Serial.print("Valor=");
+  Serial.print(valor);
+  Serial.print('\t'); // tabulation
+  Serial.print("Tension=");
+  Serial.print(tension);
+  Serial.println("V");
   
+// Initialisation du module Pmod AD5
+ void Init_AD7193(void)
+{
+ AD7193.begin(); // initialization of Pmod AD5 module
+ AD7193.AppendStatusValuetoData(); // configuration of Pmod AD5 module
+ AD7193.SetPGAGain(1);
+ AD7193.SetAveraging(100);
+ AD7193.Calibrate();
+ AD7193.ReadRegisterMap();
+}
+
   float lectura = 400;
   Serial.print("CO2 Concentration: "); // Print the CO2 concentration on the serial monitor
   Serial.print(co2Concentration);

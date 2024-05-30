@@ -25,8 +25,8 @@ WiFiUDP ntpUDP;
 #include <QueueArray.h>
 #include <Wire.h>
 #include <SD.h>
-
-
+#include <SPI.h> // Call of libraries
+#include <AD7193.h>
 
 
 //////////////////////////////////////
@@ -36,6 +36,11 @@ WiFiUDP ntpUDP;
 time_t local_t; // Variable that stores the number of seconds since a particular date and time
 float CO2_concentration; // Variable that defines the CO2 concentration inside the incubator
 enum EstadoValvula {CLOSE,OPEN}; // Variable that defines the possible states of the valve
+
+AD7193 AD7193; // Creation of the object AD7193
+
+unsigned long valor;
+float tension;
 
 QueueArray<int> event_queue;
 
@@ -108,8 +113,8 @@ const char* serverName = "http://example.com/post-data"; // Replace with the ser
 ///////////////////////
 
 
-void setup() { { // Initialize serial communication
-  Serial.begin(115200); 
+void setup()  { 
+  Serial.begin(115200); // Initialize serial communication
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -117,9 +122,11 @@ void setup() { { // Initialize serial communication
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  
+  Init_AD7193();
 
   }
-}
+
 ///////////////////////
 ////// The loop //////
 /////////////////////
